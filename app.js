@@ -18,10 +18,11 @@ app.set('view engine', 'jade');
 // middleware
 app.use(logger('dev'));
 app.use(express.json());
-app.use(cors());
+app.use(cors({credentials: true, origin: true}));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 // databse connection
 const dbURI = "mongodb+srv://Redwan:TestTest@nomas-todo.dbsp9.mongodb.net/Nomas-Todo";
@@ -30,10 +31,9 @@ mongoose.connect(dbURI)
 	.catch((err) => console.log(err));
 
 // app.use('/', indexRouter);
+app.use('/', authRoutesRouter);
 app.use('/users', usersRouter);
 app.use('/testAPI', testAPIRouter);
-app.use('/signup', authRoutesRouter);
-app.use('/signin', authRoutesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
