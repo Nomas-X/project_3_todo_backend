@@ -9,9 +9,18 @@ const handleErrors = (err) => {
 	console.log(err.message, err.code);
 	let errors = { first_name: '', last_name: '', email: '', password: '' };
 
+	// incorrect email
+	if (err.message === 'Email is unregistered or incorrect') {
+		errors.email = err.message;
+	}
+
+	if (err.message === 'Password is incorrect') {
+		errors.password = err.message;
+	}
+
 	// duplicate error code
 	if (err.code === 11000) {
-		errors.email = 'That email is already registered';
+		errors.email = 'This email is already registered';
 		return errors;
 	}
 
@@ -48,15 +57,20 @@ module.exports.signup_post = async (req, res) => {
 	}
 };
 
-module.exports.signup_get = (req, res) => {
-	res.send("This is a test!23");
-}
-
 module.exports.signin_post = async (req, res) => {
 	const { email, password } = req.body;
-
-	res.send(req.body);
 	console.log(req.body);
+
+	try {
+		const user = await User.signin(email, password);
+		const token = createToken(user._id);
+		res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000});
+		res.status(200).json({ user: user._id });
+	}
+	catch (err) {
+		const errors = handleErrors(err);
+		res.status(400).json({ errors });
+	}
 }
 
 
