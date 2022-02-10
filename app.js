@@ -7,6 +7,7 @@ var cors = require('cors');
 const mongoose = require('mongoose');
 // var indexRouter = require('./routes/signup');
 var usersRouter = require('./routes/users');
+const { requireAuth } = require('./middleware/authMiddleware');
 testAPIRouter = require('./routes/testAPI');
 authRoutesRouter = require('./routes/authRoutes');
 var app = express();
@@ -32,6 +33,7 @@ mongoose.connect(dbURI)
 
 // app.use('/', indexRouter);
 app.use('/', authRoutesRouter);
+// app.get('/dashboard', requireAuth, (req, res) => res.send('something worked?')) //Change to use
 app.use('/users', usersRouter);
 app.use('/testAPI', testAPIRouter);
 

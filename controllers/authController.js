@@ -1,6 +1,8 @@
 // requirements
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const { requireAuth } = require('../middleware/authMiddleware');
+
 
 
 
@@ -41,6 +43,16 @@ const createToken = (id) => {
 }
 
 // module exporting
+
+module.exports.signcheck_get = async (req, res) => {
+
+	try {
+		requireAuth(req, res);
+	}
+	catch (err) {
+		res.status(400).json('Authentication failed due to a server side error!');
+	}
+};
 
 module.exports.signup_post = async (req, res) => {
 	const { first_name, last_name, email, password } = req.body;
