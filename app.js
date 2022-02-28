@@ -5,11 +5,11 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 const mongoose = require('mongoose');
-// var indexRouter = require('./routes/signup');
 var usersRouter = require('./routes/users');
 const { requireAuth } = require('./middleware/authMiddleware');
 testAPIRouter = require('./routes/testAPI');
 authRoutesRouter = require('./routes/authRoutes');
+todoRoutesRouter = require('./routes/todoRoutes');
 var app = express();
 
 // view engine setup
@@ -31,11 +31,12 @@ mongoose.connect(dbURI)
 	.then((result) => app.listen(8000))
 	.catch((err) => console.log(err));
 
-// app.use('/', indexRouter);
+// routes
+
 app.use('/', authRoutesRouter);
-// app.get('/dashboard', requireAuth, (req, res) => res.send('something worked?')) //Change to use
-app.use('/users', usersRouter);
+app.use('/dashboard', todoRoutesRouter);
 app.use('/testAPI', testAPIRouter);
+app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

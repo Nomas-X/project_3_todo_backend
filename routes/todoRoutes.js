@@ -1,10 +1,10 @@
 const express = require('express');
+const router = express.Router();
 const todoController = require('../controllers/todoController');
 
-const router = express.Router();
+router.put('/add', todoController.add);
+router.put('/delete', todoController.delete);
+router.put('/deleteAll', todoController.deleteAll);
 
-router.get('/dashboard', todoController.list_index);
-// router.post('/dashboard', todoController.todo_create_item);
-// router.delete('/dashboard', todoController.todo_delete);
 
 module.exports = router;

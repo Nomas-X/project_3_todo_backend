@@ -1,5 +1,6 @@
 // requirements
 const User = require('../models/User');
+const List = require('../models/List');
 const jwt = require('jsonwebtoken');
 const { requireAuth } = require('../middleware/authMiddleware');
 
@@ -59,9 +60,10 @@ module.exports.signup_post = async (req, res) => {
 	
 	try {
 		const user = await User.create({ first_name, last_name, email, password });
+		const list = await List.create({ UID: user.id, pending: [], completed: [] });
 		const token = createToken(user._id);
 		res.cookie('jwt', token, { httpOnly: true,  maxAge: maxAge * 1000 });
-		res.status(201).json({ user: user._id });
+		res.status(201).json({ user: user._id, list: list.id });
 	}
 	catch (err) {
 		const errors = handleErrors(err);
