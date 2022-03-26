@@ -5,9 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 const mongoose = require('mongoose');
-var usersRouter = require('./routes/users');
-const { requireAuth } = require('./middleware/authMiddleware');
-testAPIRouter = require('./routes/testAPI');
 authRoutesRouter = require('./routes/authRoutes');
 todoRoutesRouter = require('./routes/todoRoutes');
 var app = express();
@@ -35,8 +32,6 @@ mongoose.connect(dbURI)
 
 app.use('/', authRoutesRouter);
 app.use('/dashboard', todoRoutesRouter);
-app.use('/testAPI', testAPIRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

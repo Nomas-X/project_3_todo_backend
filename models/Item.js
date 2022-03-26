@@ -27,13 +27,12 @@ itemSchema.statics.findItems = async function(uid) {
 	
 	if (itemsList) {
 			return itemsList;
+	} else {
+		throw Error("No items with this uid exist")
 	}
-	// throw Error("No items with this uid exist")
 }
 
 itemSchema.statics.add = async function(item) {
-	console.log('UID UID UID UID UID UID UID UID UID UID');
-	console.log(item);
 	let docCreate = await this.create(item);
 	return docCreate;
 }

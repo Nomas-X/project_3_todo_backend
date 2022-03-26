@@ -4,8 +4,6 @@ const jwt = require('jsonwebtoken');
 const { requireAuth } = require('../middleware/authMiddleware');
 
 
-
-
 // handle errors
 const handleErrors = (err) => {
 	console.log(err.message, err.code);
@@ -79,7 +77,9 @@ module.exports.signup_post = async (req, res) => {
 	try {
 		const user = await User.create({ first_name, last_name, email, password });
 		const token = createToken(user._id);
+		const id_token = createId_Token(user._id);
 		res.cookie('jwt', token, { httpOnly: true,  maxAge: maxAge * 1000 });
+		res.cookie('UID', id_token, { httpOnly: true, maxAge: 10 * 365 * 24 * 60 * 60 * 1000 });
 		res.status(201).json({ user: user._id });
 	}
 	catch (err) {
@@ -90,7 +90,6 @@ module.exports.signup_post = async (req, res) => {
 
 module.exports.signin_post = async (req, res) => {
 	const { email, password } = req.body;
-	console.log(req.body);
 
 	try {
 		const user = await User.signin(email, password);

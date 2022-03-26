@@ -11,7 +11,6 @@ const requireAuth = (req, res) => {
 					console.log(err.message);
 					res.status(401).json('Authentication failed');
 				} else {
-					console.log(decodedToken);
 					res.status(200).json('Authentication successful');
 				}
 			})

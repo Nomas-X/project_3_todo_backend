@@ -12,7 +12,6 @@ const findList = (req, res) => {
 					console.log(err.message);
 					res.status(401).json('Authentication failed');
 				} else {
-					console.log(decodedToken);
 					const async_fix = async (decodedToken) => {
 						const list = await Item.findItems(decodedToken.id)
 						res.status(200).json(list);
@@ -37,10 +36,7 @@ const findUID = (req, res) => {
 					console.log(err.message);
 					res.status(401).json('Authentication failed');
 				} else {
-					console.log(decodedToken);
-					console.log('DECODED TOKEN PTOATO DECODED TOKEN POTATO')
 					const uid = decodedToken.id
-					console.log(uid)
 					return_uid = uid;
 				}
 			})

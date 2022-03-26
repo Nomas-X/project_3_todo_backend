@@ -30,7 +30,6 @@ module.exports.add = async (req, res) => {
 		uid = findUID(req, res);
 		item.uid = uid;
 		const docCreate = await Item.add(item);
-		console.log('testest')
 		findList(req, res);
 	}
 	catch (err) {
