@@ -1,5 +1,6 @@
 // requirements
-const List = require('../models/List');
+const { findList, findUID } = require('../middleware/todoMiddleware');
+const Item = require('../models/Item');
 
 // handle errors
 const handleErrors = (err) => {
@@ -11,13 +12,26 @@ const handleErrors = (err) => {
 
 // module exporting
 
-module.exports.add = async (req, res) => {
-	const { id, item } = req.body;
-	console.log(req.body);
+module.exports.find = async (req, res) => {
 
 	try {
-		const list = await List.add(id, item);
-		res.status(200).json({ list });
+		findList(req, res);
+	}
+	catch (err) {
+		const errors = handleErrors(err);
+		res.status(400).json({ errors });
+	}
+};
+
+module.exports.add = async (req, res) => {
+	const item = req.body;
+
+	try {
+		uid = findUID(req, res);
+		item.uid = uid;
+		const docCreate = await Item.add(item);
+		console.log('testest')
+		findList(req, res);
 	}
 	catch (err) {
 		const errors = handleErrors(err);
@@ -26,26 +40,11 @@ module.exports.add = async (req, res) => {
 };
 
 module.exports.delete = async (req, res) => {
-	const { id, item } = req.body;
-	console.log(req.body);
+	const id = req.body._id;
 
 	try {
-		const list = await List.delete(id, item);
-		res.status(200).json({ list });
-	}
-	catch (err) {
-		const errors = handleErrors(err);
-		res.status(400).json({ errors });
-	}
-};
-
-module.exports.deleteAll = async (req, res) => {
-	const { id } = req.body;
-	console.log(req.body);
-
-	try {
-		const list = await List.deleteAll(id);
-		res.status(200).json({ list });
+		const list = await Item.delete(id);
+		findList(req, res);
 	}
 	catch (err) {
 		const errors = handleErrors(err);

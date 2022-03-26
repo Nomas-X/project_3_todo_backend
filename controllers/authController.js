@@ -1,6 +1,5 @@
 // requirements
 const User = require('../models/User');
-const List = require('../models/List');
 const jwt = require('jsonwebtoken');
 const { requireAuth } = require('../middleware/authMiddleware');
 
@@ -42,6 +41,11 @@ const createToken = (id) => {
 		expiresIn: maxAge
 	});
 }
+const createId_Token = (id) => {
+	return jwt.sign({ id }, 'Dummy Secret', {
+		expiresIn: maxAge * 24 * 365
+	});
+}
 
 // module exporting
 
@@ -55,15 +59,28 @@ module.exports.signcheck_get = async (req, res) => {
 	}
 };
 
+module.exports.signout = async (req, res) => {
+
+	try {
+		const token = createToken('');
+		const id_token = createId_Token('');
+		res.cookie('jwt', token, { httpOnly: true, maxAge: 1});
+		res.cookie('UID', id_token, { httpOnly: true, maxAge: 1 });
+		res.status(200).json("Signout Successful");
+	}
+	catch (err) {
+		res.status(400).json('Signout Failed');
+	}
+};
+
 module.exports.signup_post = async (req, res) => {
 	const { first_name, last_name, email, password } = req.body;
 	
 	try {
 		const user = await User.create({ first_name, last_name, email, password });
-		const list = await List.create({ UID: user.id, pending: [], completed: [] });
 		const token = createToken(user._id);
 		res.cookie('jwt', token, { httpOnly: true,  maxAge: maxAge * 1000 });
-		res.status(201).json({ user: user._id, list: list.id });
+		res.status(201).json({ user: user._id });
 	}
 	catch (err) {
 		const errors = handleErrors(err);
@@ -78,7 +95,9 @@ module.exports.signin_post = async (req, res) => {
 	try {
 		const user = await User.signin(email, password);
 		const token = createToken(user._id);
+		const id_token = createId_Token(user._id);
 		res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000});
+		res.cookie('UID', id_token, { httpOnly: true, maxAge: 10 * 365 * 24 * 60 * 60 * 1000 });
 		res.status(200).json({ user: user._id });
 	}
 	catch (err) {
